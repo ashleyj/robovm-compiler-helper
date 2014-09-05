@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.robovm.maven;
+package org.robovm.compilerhelper;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.robovm.compiler.AppCompiler;
 import org.robovm.compiler.config.Config;
 import org.robovm.compiler.Version;
@@ -29,15 +28,21 @@ public class Compiler {
     Config.Builder configuration;
     Config.Home home;
 
-    public void compile() throws MojoExecutionException, IOException {
+    public void compile() throws IOException {
 
         if (home == null) {
             RoboVMResolver resolver = new RoboVMResolver();
-            File compilerFile = resolver.resolveRoboVMCompilerArtifact();
-            File unpackDir = resolver.unpackInPlace(compilerFile);
-            File unpackedDistDir = new File(unpackDir, "robovm-" + Version.getVersion());
-            home = new Config.Home(unpackedDistDir);
-            configuration.home(home);
+            File compilerFile = null;
+            try {
+                compilerFile = resolver.resolveRoboVMCompilerArtifact();
+                File unpackDir = resolver.unpackInPlace(compilerFile);
+                File unpackedDistDir = new File(unpackDir, "robovm-" + Version.getVersion());
+                home = new Config.Home(unpackedDistDir);
+                configuration.home(home);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed compilation : " + e.getMessage());
+            }
+
         }
 
         AppCompiler compiler = new AppCompiler(configuration.build());
@@ -51,6 +56,7 @@ public class Compiler {
 
     public Compiler withConfiguration(Config.Builder configuration) {
         this.configuration = configuration;
+
         return this;
     }
 

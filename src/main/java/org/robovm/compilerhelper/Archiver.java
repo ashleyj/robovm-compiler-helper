@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.robovm.maven;
-
-import java.io.*;
-import java.util.Random;
+package org.robovm.compilerhelper;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.jboss.shrinkwrap.impl.base.io.tar.TarArchive;
+
+import java.io.*;
 
 public class Archiver {
 

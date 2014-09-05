@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.robovm.maven;
+package org.robovm.compilerhelper;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jboss.shrinkwrap.resolver.api.NoResolvedResultException;
@@ -22,12 +22,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.robovm.compiler.Version;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class RoboVMResolver {
 
-    private static String ROBOVM_DIST = "org.robovm:robovm-dist:tar.gz:nocompiler:" + getRoboVMVersion();
+    private static String ROBOVM_DIST = "org.robovm:robovm-dist:tar.gz:" + getRoboVMVersion();
     private static String JFX_BACKPORT = "net.java.openjfx.backport:openjfx-78-backport:1.8.0-ea-b96.1";
     private static String JFX_BACKPORT_COMPAT = "net.java.openjfx.backport:openjfx-78-backport-compat:1.8.0.1";
     private static String JFX_NATIVE = "net.java.openjfx.backport:openjfx-78-backport-native:1.8.0-ea-b96.1";
@@ -36,13 +35,13 @@ public class RoboVMResolver {
         return Version.getVersion();
     }
 
-    protected File resolveArtifact(String artifact) {
+    public File resolveArtifact(String artifact) {
         File f;
         try {
             /* do offline check first */
             f = Maven.configureResolver().workOffline().resolve(artifact).withoutTransitivity().asSingleFile();
         } catch (NoResolvedResultException nre) {
-            f = Maven.configureResolver().resolve(artifact).withTransitivity().asSingleFile();
+            f = Maven.configureResolver().resolve(artifact).withoutTransitivity().asSingleFile();
         }
         return f;
     }
@@ -58,24 +57,23 @@ public class RoboVMResolver {
         return f;
     }
 
-    protected File resolveRoboVMCompilerArtifact() throws MojoExecutionException {
+    protected File resolveRoboVMCompilerArtifact() {
         return resolveArtifact(ROBOVM_DIST);
     }
 
-    protected File resolveJavaFXBackportRuntimeArtifact() throws MojoExecutionException {
+    protected File resolveJavaFXBackportRuntimeArtifact() {
         return resolveArtifact(JFX_BACKPORT);
     }
 
-    protected File resolveJavaFXBackportCompatibilityArtifact()
-            throws MojoExecutionException {
+    protected File resolveJavaFXBackportCompatibilityArtifact() {
         return resolveArtifact(JFX_BACKPORT_COMPAT);
     }
 
-    protected File resolveJavaFXNativeArtifact() throws MojoExecutionException {
+    protected File resolveJavaFXNativeArtifact() {
         return resolveArtifact(JFX_NATIVE);
     }
 
-    protected File unpackJavaFXNativeIOSArtifact() throws MojoExecutionException, IOException {
+    protected File unpackJavaFXNativeIOSArtifact() throws IOException {
         File jarFile = resolveJavaFXNativeArtifact();
         // by default unpack into the local repo directory
         File unpackBaseDir = new File(jarFile.getParent(), "unpacked");
@@ -88,13 +86,13 @@ public class RoboVMResolver {
     }
 
     protected File unpack(File archive, File targetDirectory)
-            throws MojoExecutionException, IOException {
+            throws IOException {
 
         if (!targetDirectory.exists()) {
 
             getLog().info("Extracting '" + archive + "' to: " + targetDirectory);
             if (!targetDirectory.mkdirs()) {
-                throw new MojoExecutionException(
+                throw new RuntimeException(
                         "Unable to create base directory to unpack into: "
                                 + targetDirectory);
             }

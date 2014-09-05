@@ -1,16 +1,14 @@
-package org.robovm.maven;
+package org.robovm.compilerhelper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.robovm.compiler.config.Config;
+import org.robovm.compilerhelper.RoboVMResolver;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.junit.Assert.assertTrue;
 
@@ -35,10 +33,10 @@ public class CompilerTest {
     }
 
     @Test
-    public void testCompileHelloWorld() throws IOException, MojoExecutionException {
+    public void testCompileHelloWorld() throws IOException {
         Config.Builder configuration = getConfigurationWithMainClass(HelloWorld.class);
 
-        new Compiler()
+        new org.robovm.compilerhelper.Compiler()
                 .withConfiguration(configuration)
                 .compile();
     }
