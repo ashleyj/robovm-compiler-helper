@@ -41,7 +41,9 @@ public class RoboVMResolver {
             /* do offline check first */
             f = Maven.configureResolver().workOffline().resolve(artifact).withoutTransitivity().asSingleFile();
         } catch (NoResolvedResultException nre) {
-            f = Maven.configureResolver().resolve(artifact).withoutTransitivity().asSingleFile();
+            f = Maven.configureResolver()
+                    .withRemoteRepo("Sonatype Nexus Snapshots","https://oss.sonatype.org/content/repositories/snapshots/", "default")
+                    .resolve(artifact).withoutTransitivity().asSingleFile();
         }
         return f;
     }
@@ -52,7 +54,9 @@ public class RoboVMResolver {
             /* do offline check first */
             f = Maven.configureResolver().workOffline().resolve(artifact).withTransitivity().asFile();
         } catch (NoResolvedResultException nre) {
-            f = Maven.configureResolver().resolve(artifact).withTransitivity().asFile();
+            f = Maven.configureResolver()
+                    .withRemoteRepo("Sonatype Nexus Snapshots","https://oss.sonatype.org/content/repositories/snapshots/", "default")
+                    .resolve(artifact).withTransitivity().asFile();
         }
         return f;
     }

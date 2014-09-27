@@ -30,17 +30,20 @@ public class Compiler {
 
     public void compile() throws IOException {
 
+        File unpackDir = null;
+        File unpackedDistDir = null;
+
         if (home == null) {
             RoboVMResolver resolver = new RoboVMResolver();
             File compilerFile = null;
             try {
                 compilerFile = resolver.resolveRoboVMCompilerArtifact();
-                File unpackDir = resolver.unpackInPlace(compilerFile);
-                File unpackedDistDir = new File(unpackDir, "robovm-" + Version.getVersion());
+                unpackDir = resolver.unpackInPlace(compilerFile);
+                unpackedDistDir = new File(unpackDir, "robovm-" + Version.getVersion());
                 home = new Config.Home(unpackedDistDir);
                 configuration.home(home);
             } catch (Exception e) {
-                throw new RuntimeException("Failed compilation : " + e.getMessage());
+                e.printStackTrace();
             }
 
         }

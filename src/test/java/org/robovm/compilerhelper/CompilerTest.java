@@ -29,7 +29,7 @@ public class CompilerTest {
 
         File archive = resolver.resolveRoboVMCompilerArtifact();
         resolver.unpack(archive, unpackDir);
-        assertTrue(new File(unpackDir + "/" + "robovm-0.0.14").exists());
+        assertTrue(new File(unpackDir + "/" + "robovm-1.0.0-SNAPSHOT").exists());
     }
 
     @Test
